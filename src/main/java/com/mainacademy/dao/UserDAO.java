@@ -2,7 +2,6 @@ package com.mainacademy.dao;
 
 import com.mainacademy.model.User;
 
-import javax.jws.soap.SOAPBinding;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +11,7 @@ import java.util.List;
 public class UserDAO {
 
     public static User create(User user) {
-        String sql = "INSERT INTO users(login,password, first_name, last_name)" + "VALUES(?,?,?,?) ";
+        String sql = "INSERT INTO users(login,password, first_name, last_name) VALUES(?,?,?,?) ";
         String sequenceSQL = "SELECT currval(pg_get_serial_sequence('users','id'))";
 
         try (
