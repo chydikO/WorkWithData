@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
@@ -89,7 +90,29 @@ public class UserDAO {
 
     public static List<User> findLogin (String login) {
         String sql = "SELECT * FROM users WHERE login = ?";
+        List<User> items = new ArrayList<>();
 
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                User user = new User    (resultSet.getString("login"),
+                        resultSet.getString("password"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"));
+                user.setId(resultSet.getInt("id"));
+                items.add(user);
+            }
+            return items;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

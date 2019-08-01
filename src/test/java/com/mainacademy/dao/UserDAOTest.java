@@ -43,6 +43,5 @@ public class UserDAOTest {
         UserDAO.delete(checkedUSerInDB.getId());
         User deletedUser = UserDAO.findById(userInDB.getId());
         assertNull(deletedUser);
-
     }
 }
