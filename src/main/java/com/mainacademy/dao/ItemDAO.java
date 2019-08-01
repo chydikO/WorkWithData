@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDAO {
@@ -35,14 +36,29 @@ public class ItemDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-
         return null;
     }
 
     public static Item update (Item item) {
+        //UPDATE table SET column1 = value1, column2 = value2 ,... WHERE condition;
+        String sql = "UPDATE items SET item_code = ?, name = ?, price = ? WHERE id = ?";
 
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            preparedStatement.setString(1, item.getItemCode());
+            preparedStatement.setString(2, item.getName());
+            preparedStatement.setInt(3, item.getPrice());
+            preparedStatement.setInt(4, item.getId());
+
+            preparedStatement.executeUpdate();
+            return item;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -72,7 +88,29 @@ public class ItemDAO {
     }
 
     public static List<Item> findName(String name) {
+        String sql = "SELECT * FROM items WHERE name = ?";
+        List<Item> items = new ArrayList<>();
 
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Item item = new Item    (resultSet.getString("item_code"),
+                                        resultSet.getString("name"),
+                                        new Integer(resultSet.getString("price")));
+                item.setId(resultSet.getInt(1));
+                items.add(item);
+            }
+            return items;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -90,8 +128,30 @@ public class ItemDAO {
     }
 
     public static List<Item> findAll() {
+        String sql = "SELECT * FROM items";
+        List<Item> items = new ArrayList<>();
 
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Item item = new Item   (resultSet.getString("item_code"),
+                                        resultSet.getString("name"),
+                                        new Integer(resultSet.getString("price")));
+                item.setId(resultSet.getInt("id"));
+                items.add(item);
+            }
+            return items;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
+
 
 }

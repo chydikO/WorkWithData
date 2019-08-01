@@ -61,11 +61,6 @@ public class UserDAO {
         return null;
     }
 
-    public static User find (Integer id) {
-
-        return null;
-    }
-
     public static User findById (Integer id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (
