@@ -3,8 +3,6 @@ package com.mainacademy.service;
 import com.mainacademy.dao.ItemDAO;
 import com.mainacademy.model.Item;
 
-import java.util.List;
-
 public class ItemService {
 
     public static Item create(Item item) {

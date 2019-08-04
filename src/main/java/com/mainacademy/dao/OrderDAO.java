@@ -1,7 +1,5 @@
 package com.mainacademy.dao;
 
-import com.mainacademy.model.Cart;
-import com.mainacademy.model.Item;
 import com.mainacademy.model.Order;
 import com.mainacademy.model.User;
 
