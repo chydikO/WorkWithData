@@ -127,12 +127,35 @@ public class OrderDAO {
 
 
     public static List<Order> findClosedOrdersByUserAndPeriod(Integer userId, Long from, Long to) {
+        List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.id, o.item_id, o.amount, o.cart_id FROM orders o " +
                             "JOIN carts c On o.card_ = c_id" +
                                 "WHERE c.user_id = ? AND c.creation_time >= ? AND c.creation_time <= ? " +
                                     "Order BY c.creation_time";
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setLong(2, from);
+            preparedStatement.setLong(3, to);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
+            while (resultSet.next()) {
+                Order order = new Order();
+                order.setId(resultSet.getInt("id"));
+                order.setItemId(resultSet.getInt("item_id"));
+                order.setAmount(resultSet.getInt("amount"));
+                order.setCardId(resultSet.getInt("card_id"));
+                orders.add(order);
+            }
+            return orders;
 
-        return null;
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+
+        return orders;
     }
 }
