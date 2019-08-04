@@ -19,12 +19,11 @@ public class UserDAO {
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 PreparedStatement sequenceStatement = connection.prepareStatement(sequenceSQL);
-            )
-        {
-            preparedStatement.setString(1 ,user.getLogin());
-            preparedStatement.setString(2 ,user.getPassword());
-            preparedStatement.setString(3 ,user.getFirstNmae());
-            preparedStatement.setString(4 ,user.getLastName());
+        ) {
+            preparedStatement.setString(1, user.getLogin());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getFirstNmae());
+            preparedStatement.setString(4, user.getLastName());
 
             preparedStatement.executeUpdate();
 
@@ -46,13 +45,12 @@ public class UserDAO {
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        )
-        {
-            preparedStatement.setString(1 ,user.getLogin());
-            preparedStatement.setString(2 ,user.getPassword());
-            preparedStatement.setString(3 ,user.getFirstNmae());
-            preparedStatement.setString(4 ,user.getLastName());
-            preparedStatement.setInt   (5 ,user.getId());
+        ) {
+            preparedStatement.setString(1, user.getLogin());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getFirstNmae());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setInt(5, user.getId());
 
             preparedStatement.executeUpdate();
             return user;
@@ -62,14 +60,13 @@ public class UserDAO {
         return null;
     }
 
-    public static User findById (Integer id) {
+    public static User findById(Integer id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        )
-        {
-            preparedStatement.setInt(1,id);
+        ) {
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 User user = new User();
@@ -88,20 +85,19 @@ public class UserDAO {
         return null;
     }
 
-    public static List<User> findLogin (String login) {
+    public static List<User> findLogin(String login) {
         String sql = "SELECT * FROM users WHERE login = ?";
         List<User> items = new ArrayList<>();
 
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        )
-        {
+        ) {
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                User user = new User    (resultSet.getString("login"),
+                User user = new User(resultSet.getString("login"),
                         resultSet.getString("password"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"));
@@ -116,12 +112,11 @@ public class UserDAO {
         return null;
     }
 
-    public static void delete (Integer id) {
+    public static void delete(Integer id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try (
                 Connection connection = ConnectionToDB.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);)
-        {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -129,9 +124,35 @@ public class UserDAO {
         }
     }
 
-    public static List<User> findAll () {
+    public static List<User> findAll() {
         String sql = "SELECT * FROM users";
 
+        return null;
+    }
+
+    public static User findByLogin(String login) {
+        String sql = "SELECT * FROM users WHERE login = ?";
+
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ) {
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                User user = new User(resultSet.getString("login"),
+                                    resultSet.getString("password"),
+                                    resultSet.getString("first_name"),
+                                    resultSet.getString("last_name"));
+                                    user.setId(resultSet.getInt("id")
+                                    );
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

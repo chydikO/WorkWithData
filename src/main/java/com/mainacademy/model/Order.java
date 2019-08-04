@@ -12,13 +12,13 @@ import lombok.Setter;
 
 public class Order {
     private Integer id;
-    private String itemCode;
-    private String name;
-    private Integer price;
+    private Integer itemId;
+    private Integer amount;
+    private Integer cardId;
 
-    public Order(String itemCode, String name, Integer price) {
-        this.itemCode = itemCode;
-        this.name = name;
-        this.price = price;
+    public Order(Integer itemCode, Integer price, Integer cardId) {
+        this.itemId = itemCode;
+        this.amount = price;
+        this.cardId = cardId;
     }
 }
