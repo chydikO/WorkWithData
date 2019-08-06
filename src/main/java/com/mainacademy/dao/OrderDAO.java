@@ -15,7 +15,7 @@ public class OrderDAO {
     private static Logger logger = Logger.getLogger(OrderDAO.class.getName());
 
     public static Order create(Order order) {
-        String sql = "INSERT INTO orders(item_id, amount, card_id) VALUES(?,?,?)";
+        String sql = "INSERT INTO orders(item_id, amount, cart_id) VALUES(?,?,?)";
         String seqSql = "SELECT currval(pg_get_serial_sequence('orders','id'))";
 
         try (
@@ -26,7 +26,7 @@ public class OrderDAO {
         {
             preparedStatement.setInt(1, order.getItemId());
             preparedStatement.setInt(2, order.getAmount());
-            preparedStatement.setInt(3, order.getCardId());
+            preparedStatement.setInt(3, order.getCartId());
 
             preparedStatement.executeUpdate();
             ResultSet resultSet = seqStatement.executeQuery();
@@ -60,7 +60,7 @@ public class OrderDAO {
                 order.setId(resultSet.getInt("id"));
                 order.setItemId(resultSet.getInt("item_id"));
                 order.setAmount(resultSet.getInt("amount"));
-                order.setCardId(resultSet.getInt("card_id"));
+                order.setCartId(resultSet.getInt("cart_id"));
 
                 return order;
             }
@@ -97,7 +97,7 @@ public class OrderDAO {
 
     public static List<Order> findByCart(Integer cartId) {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders WHERE card_id = ?";
+        String sql = "SELECT * FROM orders WHERE cart_id = ?";
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -111,7 +111,7 @@ public class OrderDAO {
                 order.setId(resultSet.getInt("id"));
                 order.setItemId(resultSet.getInt("item_id"));
                 order.setAmount(resultSet.getInt("amount"));
-                order.setCardId(resultSet.getInt("card_id"));
+                order.setCartId(resultSet.getInt("cart_id"));
                 orders.add(order);
             }
             return orders;
@@ -127,7 +127,7 @@ public class OrderDAO {
     public static List<Order> findClosedOrdersByUserAndPeriod(Integer userId, Long from, Long to) {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.id, o.item_id, o.amount, o.cart_id FROM orders o " +
-                            "JOIN carts c On o.card_ = c_id" +
+                            "JOIN carts c On o.cart_ = c.id" +
                                 "WHERE c.user_id = ? AND c.creation_time >= ? AND c.creation_time <= ? " +
                                     "Order BY c.creation_time";
         try (
@@ -145,7 +145,7 @@ public class OrderDAO {
                 order.setId(resultSet.getInt("id"));
                 order.setItemId(resultSet.getInt("item_id"));
                 order.setAmount(resultSet.getInt("amount"));
-                order.setCardId(resultSet.getInt("card_id"));
+                order.setCartId(resultSet.getInt("cart_id"));
                 orders.add(order);
             }
             return orders;
